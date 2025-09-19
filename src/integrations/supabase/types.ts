@@ -83,6 +83,42 @@ export type Database = {
         }
         Relationships: []
       }
+      forums: {
+        Row: {
+          color: string
+          created_at: string
+          created_by: string
+          description: string | null
+          id: string
+          name: string
+          post_count: number
+          topic_count: number
+          updated_at: string
+        }
+        Insert: {
+          color?: string
+          created_at?: string
+          created_by: string
+          description?: string | null
+          id?: string
+          name: string
+          post_count?: number
+          topic_count?: number
+          updated_at?: string
+        }
+        Update: {
+          color?: string
+          created_at?: string
+          created_by?: string
+          description?: string | null
+          id?: string
+          name?: string
+          post_count?: number
+          topic_count?: number
+          updated_at?: string
+        }
+        Relationships: []
+      }
       goals: {
         Row: {
           completed_at: string | null
@@ -217,6 +253,7 @@ export type Database = {
           bio: string | null
           created_at: string
           display_name: string
+          english_level: string | null
           id: string
           level: number
           monthly_points: number
@@ -232,6 +269,7 @@ export type Database = {
           bio?: string | null
           created_at?: string
           display_name: string
+          english_level?: string | null
           id?: string
           level?: number
           monthly_points?: number
@@ -247,6 +285,7 @@ export type Database = {
           bio?: string | null
           created_at?: string
           display_name?: string
+          english_level?: string | null
           id?: string
           level?: number
           monthly_points?: number
@@ -384,6 +423,48 @@ export type Database = {
           id?: string
           name?: string
           usage_count?: number
+        }
+        Relationships: []
+      }
+      topics: {
+        Row: {
+          content: string
+          created_at: string
+          forum_id: string
+          id: string
+          is_locked: boolean
+          is_pinned: boolean
+          replies_count: number
+          title: string
+          updated_at: string
+          user_id: string
+          views_count: number
+        }
+        Insert: {
+          content: string
+          created_at?: string
+          forum_id: string
+          id?: string
+          is_locked?: boolean
+          is_pinned?: boolean
+          replies_count?: number
+          title: string
+          updated_at?: string
+          user_id: string
+          views_count?: number
+        }
+        Update: {
+          content?: string
+          created_at?: string
+          forum_id?: string
+          id?: string
+          is_locked?: boolean
+          is_pinned?: boolean
+          replies_count?: number
+          title?: string
+          updated_at?: string
+          user_id?: string
+          views_count?: number
         }
         Relationships: []
       }
