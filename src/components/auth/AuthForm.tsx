@@ -17,6 +17,7 @@ export function AuthForm({ mode, onToggleMode }: AuthFormProps) {
   const [displayName, setDisplayName] = useState('');
   const [username, setUsername] = useState('');
   const [loading, setLoading] = useState(false);
+  const [resetLoading, setResetLoading] = useState(false);
   const { toast } = useToast();
 
   const handleSubmit = async (e: React.FormEvent) => {
