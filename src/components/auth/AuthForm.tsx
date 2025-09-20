@@ -30,6 +30,7 @@ export function AuthForm({ mode, onToggleMode }: AuthFormProps) {
           email,
           password,
           options: {
+            emailRedirectTo: `${window.location.origin}/`,
             data: {
               display_name: displayName,
               username: username,
@@ -59,6 +60,40 @@ export function AuthForm({ mode, onToggleMode }: AuthFormProps) {
       });
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleForgotPassword = async () => {
+    if (!email) {
+      toast({
+        title: 'Email required',
+        description: 'Please enter your email address first.',
+        variant: 'destructive',
+      });
+      return;
+    }
+
+    setResetLoading(true);
+
+    try {
+      const { error } = await supabase.auth.resetPasswordForEmail(email, {
+        redirectTo: `${window.location.origin}/`,
+      });
+
+      if (error) throw error;
+
+      toast({
+        title: 'Reset email sent!',
+        description: 'Check your email for password reset instructions.',
+      });
+    } catch (error: any) {
+      toast({
+        title: 'Error',
+        description: error.message,
+        variant: 'destructive',
+      });
+    } finally {
+      setResetLoading(false);
     }
   };
 
@@ -129,6 +164,20 @@ export function AuthForm({ mode, onToggleMode }: AuthFormProps) {
             {loading ? 'Please wait...' : mode === 'signin' ? 'Sign In' : 'Create Account'}
           </Button>
         </form>
+        
+        {mode === 'signin' && (
+          <div className="mt-4 text-center">
+            <button
+              type="button"
+              onClick={handleForgotPassword}
+              disabled={resetLoading}
+              className="text-sm text-muted-foreground hover:text-primary transition-colors disabled:opacity-50"
+            >
+              {resetLoading ? 'Sending...' : 'Forgot your password?'}
+            </button>
+          </div>
+        )}
+        
         <div className="mt-6 text-center">
           <p className="text-sm text-muted-foreground">
             {mode === 'signin' ? "Don't have an account?" : 'Already have an account?'}{' '}

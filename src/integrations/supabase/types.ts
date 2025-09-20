@@ -250,6 +250,7 @@ export type Database = {
       profiles: {
         Row: {
           avatar_url: string | null
+          badges: string[] | null
           bio: string | null
           created_at: string
           display_name: string
@@ -258,14 +259,17 @@ export type Database = {
           level: number
           monthly_points: number
           monthly_ranking_position: number | null
+          points: number | null
           ranking_position: number | null
           study_streak: number
           total_points: number
           updated_at: string
           user_id: string
+          username: string | null
         }
         Insert: {
           avatar_url?: string | null
+          badges?: string[] | null
           bio?: string | null
           created_at?: string
           display_name: string
@@ -274,14 +278,17 @@ export type Database = {
           level?: number
           monthly_points?: number
           monthly_ranking_position?: number | null
+          points?: number | null
           ranking_position?: number | null
           study_streak?: number
           total_points?: number
           updated_at?: string
           user_id: string
+          username?: string | null
         }
         Update: {
           avatar_url?: string | null
+          badges?: string[] | null
           bio?: string | null
           created_at?: string
           display_name?: string
@@ -290,11 +297,13 @@ export type Database = {
           level?: number
           monthly_points?: number
           monthly_ranking_position?: number | null
+          points?: number | null
           ranking_position?: number | null
           study_streak?: number
           total_points?: number
           updated_at?: string
           user_id?: string
+          username?: string | null
         }
         Relationships: []
       }
