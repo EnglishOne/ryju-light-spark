@@ -429,7 +429,15 @@ export default function Dashboard() {
                     {group.category}
                   </Badge>
                 </div>
-                <Button variant="outline" size="sm" className="text-xs">
+                <Button 
+                  variant={group.status === "Ativo" ? "default" : "outline"} 
+                  size="sm" 
+                  className={`text-xs font-medium ${
+                    group.status === "Ativo" 
+                      ? "bg-green-500 hover:bg-green-600 text-white border-0" 
+                      : "border-gray-300 text-gray-600 hover:bg-gray-50"
+                  }`}
+                >
                   {group.status}
                 </Button>
               </div>
