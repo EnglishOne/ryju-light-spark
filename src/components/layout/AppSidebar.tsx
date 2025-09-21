@@ -31,6 +31,7 @@ const mainItems = [
 
 const learningItems = [
   { title: 'Study Materials', url: '/materials', icon: BookOpen },
+  { title: 'English Grammar', url: '/english-grammar', icon: BookOpen },
   { title: 'Achievements', url: '/achievements', icon: Award },
 ];
 

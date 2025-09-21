@@ -18,6 +18,7 @@ import Notifications from "./pages/Notifications";
 import StudyMaterials from "./pages/StudyMaterials";
 import Achievements from "./pages/Achievements";
 import Settings from "./pages/Settings";
+import EnglishGrammar from "./pages/EnglishGrammar";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -81,6 +82,7 @@ const App = () => {
                 <Route path="/achievements" element={<Achievements />} />
                 <Route path="/notifications" element={<Notifications />} />
                 <Route path="/settings" element={<Settings />} />
+                <Route path="/english-grammar" element={<EnglishGrammar />} />
                 {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
                 <Route path="*" element={<NotFound />} />
               </Routes>
