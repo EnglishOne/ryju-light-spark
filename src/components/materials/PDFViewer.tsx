@@ -1,7 +1,12 @@
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { X, ZoomIn, ZoomOut, RotateCw } from 'lucide-react';
+import { X, ZoomIn, ZoomOut } from 'lucide-react';
+import { Document, Page, pdfjs } from 'react-pdf';
+import 'react-pdf/dist/Page/TextLayer.css';
+import 'react-pdf/dist/Page/AnnotationLayer.css';
+
+pdfjs.GlobalWorkerOptions.workerSrc = `https://unpkg.com/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.mjs`;
 
 interface PDFViewerProps {
   pdfUrl: string;
@@ -11,9 +16,15 @@ interface PDFViewerProps {
 
 export const PDFViewer = ({ pdfUrl, title, onClose }: PDFViewerProps) => {
   const [zoom, setZoom] = useState(100);
+  const [numPages, setNumPages] = useState<number | null>(null);
+  const [loadError, setLoadError] = useState<string | null>(null);
 
   const handleZoomIn = () => setZoom(prev => Math.min(prev + 25, 200));
   const handleZoomOut = () => setZoom(prev => Math.max(prev - 25, 50));
+  const onDocumentLoadSuccess = ({ numPages }: { numPages: number }) => {
+    setNumPages(numPages);
+    setLoadError(null);
+  };
 
   return (
     <div className="fixed inset-0 bg-background/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
@@ -36,40 +47,33 @@ export const PDFViewer = ({ pdfUrl, title, onClose }: PDFViewerProps) => {
           </div>
         </CardHeader>
         <CardContent className="flex-1 p-0">
-          <div className="w-full h-full bg-muted/50 rounded-lg overflow-hidden">
-            <object
-              data={`${pdfUrl}#view=FitH&toolbar=0&navpanes=0&scrollbar=1`}
-              type="application/pdf"
-              className="w-full h-full"
-              style={{ 
-                minHeight: '500px',
-                transform: `scale(${zoom / 100})`,
-                transformOrigin: 'top left',
-                width: `${10000 / zoom}%`,
-                height: `${10000 / zoom}%`
-              }}
-            >
-              <iframe
-                src={`${pdfUrl}#view=FitH&toolbar=0&navpanes=0&scrollbar=1`}
-                className="w-full h-full border-0"
-                title={title}
-                sandbox="allow-same-origin allow-scripts allow-popups allow-forms"
-                allow="fullscreen"
-                style={{ 
-                  minHeight: '500px',
-                  transform: `scale(${zoom / 100})`,
-                  transformOrigin: 'top left',
-                  width: `${10000 / zoom}%`,
-                  height: `${10000 / zoom}%`
-                }}
+          <div className="w-full h-full bg-muted/50 rounded-lg overflow-auto p-4">
+            {loadError ? (
+              <div className="h-full flex items-center justify-center text-sm text-destructive">
+                Falha ao carregar o PDF.
+                <a href={pdfUrl} target="_blank" rel="noopener noreferrer" className="underline ml-1">
+                  Abrir em nova aba
+                </a>
+              </div>
+            ) : (
+              <Document
+                file={{ url: pdfUrl }}
+                onLoadSuccess={onDocumentLoadSuccess}
+                onLoadError={() => setLoadError('Erro ao carregar PDF')}
+                loading={<div className="p-6 text-sm text-muted-foreground">Carregando PDF...</div>}
               >
-                <p>Seu navegador não suporta a visualização de PDFs. 
-                   <a href={pdfUrl} target="_blank" rel="noopener noreferrer">
-                     Clique aqui para abrir em uma nova aba.
-                   </a>
-                </p>
-              </iframe>
-            </object>
+                {Array.from(new Array(numPages || 0), (_el, index) => (
+                  <Page
+                    key={`page_${index + 1}`}
+                    pageNumber={index + 1}
+                    scale={zoom / 100}
+                    renderAnnotationLayer={false}
+                    renderTextLayer={true}
+                    className="mx-auto my-4 rounded-md shadow"
+                  />
+                ))}
+              </Document>
+            )}
           </div>
         </CardContent>
       </Card>
