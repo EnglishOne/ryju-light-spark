@@ -23,8 +23,8 @@ export const PDFUpload = ({ onUploadSuccess, materialId }: PDFUploadProps) => {
         toast.error('Por favor, selecione apenas arquivos PDF');
         return;
       }
-      if (file.size > 10 * 1024 * 1024) { // 10MB limit
-        toast.error('O arquivo deve ter no máximo 10MB');
+      if (file.size > 35 * 1024 * 1024) { // 35MB limit
+        toast.error('O arquivo deve ter no máximo 35MB');
         return;
       }
       setSelectedFile(file);
