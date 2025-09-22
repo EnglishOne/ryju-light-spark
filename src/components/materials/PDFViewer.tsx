@@ -37,10 +37,10 @@ export const PDFViewer = ({ pdfUrl, title, onClose }: PDFViewerProps) => {
         </CardHeader>
         <CardContent className="flex-1 p-0">
           <div className="w-full h-full bg-muted/50 rounded-lg overflow-hidden">
-            <iframe
-              src={`${pdfUrl}#view=FitH&toolbar=0&navpanes=0&scrollbar=1&zoom=${zoom}`}
-              className="w-full h-full border-0"
-              title={title}
+            <object
+              data={`${pdfUrl}#view=FitH&toolbar=0&navpanes=0&scrollbar=1`}
+              type="application/pdf"
+              className="w-full h-full"
               style={{ 
                 minHeight: '500px',
                 transform: `scale(${zoom / 100})`,
@@ -48,7 +48,28 @@ export const PDFViewer = ({ pdfUrl, title, onClose }: PDFViewerProps) => {
                 width: `${10000 / zoom}%`,
                 height: `${10000 / zoom}%`
               }}
-            />
+            >
+              <iframe
+                src={`${pdfUrl}#view=FitH&toolbar=0&navpanes=0&scrollbar=1`}
+                className="w-full h-full border-0"
+                title={title}
+                sandbox="allow-same-origin allow-scripts allow-popups allow-forms"
+                allow="fullscreen"
+                style={{ 
+                  minHeight: '500px',
+                  transform: `scale(${zoom / 100})`,
+                  transformOrigin: 'top left',
+                  width: `${10000 / zoom}%`,
+                  height: `${10000 / zoom}%`
+                }}
+              >
+                <p>Seu navegador não suporta a visualização de PDFs. 
+                   <a href={pdfUrl} target="_blank" rel="noopener noreferrer">
+                     Clique aqui para abrir em uma nova aba.
+                   </a>
+                </p>
+              </iframe>
+            </object>
           </div>
         </CardContent>
       </Card>
