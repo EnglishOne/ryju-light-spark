@@ -4,6 +4,8 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { PDFViewer } from '@/components/materials/PDFViewer';
+import { PDFUpload } from '@/components/materials/PDFUpload';
 import { 
   BookOpen, 
   Video, 
@@ -13,12 +15,18 @@ import {
   Star,
   Clock,
   User,
-  Download
+  Download,
+  Upload
 } from 'lucide-react';
 
 const StudyMaterials = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedLevel, setSelectedLevel] = useState('all');
+  const [showPDFViewer, setShowPDFViewer] = useState(false);
+  const [currentPDFUrl, setCurrentPDFUrl] = useState('');
+  const [currentPDFTitle, setCurrentPDFTitle] = useState('');
+  const [showUpload, setShowUpload] = useState<number | null>(null);
+  const [materialPDFs, setMaterialPDFs] = useState<Record<number, string>>({});
 
   const materials = [
     {
@@ -31,7 +39,8 @@ const StudyMaterials = () => {
       author: 'Dr. Sarah Wilson',
       description: 'Complete guide to English grammar basics including tenses, articles, and sentence structure.',
       topics: ['Grammar', 'Tenses', 'Articles'],
-      downloadUrl: '#'
+      downloadUrl: '#',
+      hasPDF: false
     },
     {
       id: 2,
@@ -43,7 +52,8 @@ const StudyMaterials = () => {
       author: 'Prof. Michael Chen',
       description: 'Practice common business scenarios with authentic conversations and vocabulary.',
       topics: ['Business', 'Conversations', 'Vocabulary'],
-      downloadUrl: '#'
+      downloadUrl: '#',
+      hasPDF: false
     },
     {
       id: 3,
@@ -55,7 +65,8 @@ const StudyMaterials = () => {
       author: 'Emma Thompson',
       description: 'Comprehensive IELTS speaking preparation with sample questions and strategies.',
       topics: ['IELTS', 'Speaking', 'Test Prep'],
-      downloadUrl: '#'
+      downloadUrl: '#',
+      hasPDF: false
     },
     {
       id: 4,
@@ -67,7 +78,8 @@ const StudyMaterials = () => {
       author: 'James Rodriguez',
       description: 'Essential phrasal verbs with examples and exercises for daily communication.',
       topics: ['Phrasal Verbs', 'Vocabulary', 'Communication'],
-      downloadUrl: '#'
+      downloadUrl: '#',
+      hasPDF: false
     }
   ];
 
@@ -87,6 +99,22 @@ const StudyMaterials = () => {
       case 'advanced': return 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200';
       default: return 'bg-gray-100 text-gray-800 dark:bg-gray-800 dark:text-gray-200';
     }
+  };
+
+  const handleStudyNow = (material: any) => {
+    const pdfUrl = materialPDFs[material.id];
+    if (pdfUrl) {
+      setCurrentPDFUrl(pdfUrl);
+      setCurrentPDFTitle(material.title);
+      setShowPDFViewer(true);
+    } else {
+      setShowUpload(material.id);
+    }
+  };
+
+  const handlePDFUploadSuccess = (url: string, materialId: number) => {
+    setMaterialPDFs(prev => ({ ...prev, [materialId]: url }));
+    setShowUpload(null);
   };
 
   const filteredMaterials = materials.filter(material => {
@@ -216,13 +244,27 @@ const StudyMaterials = () => {
               </div>
 
               <div className="flex space-x-2">
-                <Button className="flex-1">
+                <Button 
+                  className="flex-1" 
+                  onClick={() => handleStudyNow(material)}
+                >
                   <BookOpen className="h-4 w-4 mr-2" />
-                  Study Now
+                  {materialPDFs[material.id] ? 'Study Now' : 'Add PDF'}
                 </Button>
-                <Button variant="outline" size="icon">
-                  <Download className="h-4 w-4" />
-                </Button>
+                {materialPDFs[material.id] && (
+                  <Button variant="outline" size="icon">
+                    <Download className="h-4 w-4" />
+                  </Button>
+                )}
+                {!materialPDFs[material.id] && (
+                  <Button 
+                    variant="outline" 
+                    size="icon"
+                    onClick={() => setShowUpload(material.id)}
+                  >
+                    <Upload className="h-4 w-4" />
+                  </Button>
+                )}
               </div>
             </CardContent>
           </Card>
@@ -235,6 +277,35 @@ const StudyMaterials = () => {
           <h3 className="text-lg font-medium text-foreground mb-2">No materials found</h3>
           <p className="text-muted-foreground">Try adjusting your search criteria or filters.</p>
         </div>
+      )}
+
+      {/* PDF Upload Modal */}
+      {showUpload !== null && (
+        <div className="fixed inset-0 bg-background/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+          <div className="relative">
+            <Button
+              variant="outline"
+              size="sm"
+              className="absolute -top-2 -right-2 z-10 h-8 w-8 rounded-full p-0"
+              onClick={() => setShowUpload(null)}
+            >
+              ×
+            </Button>
+            <PDFUpload
+              materialId={showUpload}
+              onUploadSuccess={(url) => handlePDFUploadSuccess(url, showUpload)}
+            />
+          </div>
+        </div>
+      )}
+
+      {/* PDF Viewer */}
+      {showPDFViewer && (
+        <PDFViewer
+          pdfUrl={currentPDFUrl}
+          title={currentPDFTitle}
+          onClose={() => setShowPDFViewer(false)}
+        />
       )}
     </div>
   );
