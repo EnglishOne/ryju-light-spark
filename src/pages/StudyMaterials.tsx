@@ -5,7 +5,6 @@ import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { PDFViewer } from '@/components/materials/PDFViewer';
-import { PDFUpload } from '@/components/materials/PDFUpload';
 import { 
   BookOpen, 
   Video, 
@@ -16,7 +15,7 @@ import {
   Clock,
   User,
   Download,
-  Upload
+  FileCheck
 } from 'lucide-react';
 
 const StudyMaterials = () => {
@@ -25,61 +24,79 @@ const StudyMaterials = () => {
   const [showPDFViewer, setShowPDFViewer] = useState(false);
   const [currentPDFUrl, setCurrentPDFUrl] = useState('');
   const [currentPDFTitle, setCurrentPDFTitle] = useState('');
-  const [showUpload, setShowUpload] = useState<number | null>(null);
-  const [materialPDFs, setMaterialPDFs] = useState<Record<number, string>>({});
 
   const materials = [
     {
       id: 1,
-      title: 'English Grammar Fundamentals',
+      title: 'Fundamentos da Gramática Inglesa',
       type: 'text',
       level: 'beginner',
       duration: '45 min',
       rating: 4.8,
       author: 'Dr. Sarah Wilson',
-      description: 'Complete guide to English grammar basics including tenses, articles, and sentence structure.',
-      topics: ['Grammar', 'Tenses', 'Articles'],
-      downloadUrl: '#',
-      hasPDF: false
+      description: 'Guia completo de gramática básica incluindo tempos verbais, artigos e estrutura de frases.',
+      topics: ['Gramática', 'Tempos Verbais', 'Artigos'],
+      pdfUrl: 'https://example.com/grammar-fundamentals.pdf'
     },
     {
       id: 2,
-      title: 'Business English Conversations',
-      type: 'audio',
+      title: 'Conversação em Inglês para Negócios',
+      type: 'text',
       level: 'intermediate',
       duration: '30 min',
       rating: 4.6,
       author: 'Prof. Michael Chen',
-      description: 'Practice common business scenarios with authentic conversations and vocabulary.',
-      topics: ['Business', 'Conversations', 'Vocabulary'],
-      downloadUrl: '#',
-      hasPDF: false
+      description: 'Pratique cenários de negócios comuns com conversas autênticas e vocabulário.',
+      topics: ['Negócios', 'Conversação', 'Vocabulário'],
+      pdfUrl: 'https://example.com/business-english.pdf'
     },
     {
       id: 3,
-      title: 'IELTS Speaking Practice',
-      type: 'video',
+      title: 'Prática de Speaking IELTS',
+      type: 'text',
       level: 'advanced',
       duration: '60 min',
       rating: 4.9,
       author: 'Emma Thompson',
-      description: 'Comprehensive IELTS speaking preparation with sample questions and strategies.',
-      topics: ['IELTS', 'Speaking', 'Test Prep'],
-      downloadUrl: '#',
-      hasPDF: false
+      description: 'Preparação completa para o IELTS speaking com questões modelo e estratégias.',
+      topics: ['IELTS', 'Speaking', 'Preparação'],
+      pdfUrl: 'https://example.com/ielts-speaking.pdf'
     },
     {
       id: 4,
-      title: 'Phrasal Verbs Handbook',
+      title: 'Manual de Phrasal Verbs',
       type: 'text',
       level: 'intermediate',
       duration: '25 min',
       rating: 4.5,
       author: 'James Rodriguez',
-      description: 'Essential phrasal verbs with examples and exercises for daily communication.',
-      topics: ['Phrasal Verbs', 'Vocabulary', 'Communication'],
-      downloadUrl: '#',
-      hasPDF: false
+      description: 'Phrasal verbs essenciais com exemplos e exercícios para comunicação diária.',
+      topics: ['Phrasal Verbs', 'Vocabulário', 'Comunicação'],
+      pdfUrl: 'https://example.com/phrasal-verbs.pdf'
+    },
+    {
+      id: 5,
+      title: 'Pronúncia Avançada do Inglês',
+      type: 'text',
+      level: 'advanced',
+      duration: '50 min',
+      rating: 4.7,
+      author: 'Dr. Robert Anderson',
+      description: 'Técnicas avançadas de pronúncia e redução de sotaque.',
+      topics: ['Pronúncia', 'Fonética', 'Sotaque'],
+      pdfUrl: 'https://example.com/pronunciation.pdf'
+    },
+    {
+      id: 6,
+      title: 'Vocabulário Acadêmico',
+      type: 'text',
+      level: 'advanced',
+      duration: '40 min',
+      rating: 4.8,
+      author: 'Prof. Linda Martinez',
+      description: 'Vocabulário essencial para contextos acadêmicos e escrita formal.',
+      topics: ['Acadêmico', 'Vocabulário', 'Escrita'],
+      pdfUrl: 'https://example.com/academic-vocabulary.pdf'
     }
   ];
 
@@ -102,19 +119,9 @@ const StudyMaterials = () => {
   };
 
   const handleStudyNow = (material: any) => {
-    const pdfUrl = materialPDFs[material.id];
-    if (pdfUrl) {
-      setCurrentPDFUrl(pdfUrl);
-      setCurrentPDFTitle(material.title);
-      setShowPDFViewer(true);
-    } else {
-      setShowUpload(material.id);
-    }
-  };
-
-  const handlePDFUploadSuccess = (url: string, materialId: number) => {
-    setMaterialPDFs(prev => ({ ...prev, [materialId]: url }));
-    setShowUpload(null);
+    setCurrentPDFUrl(material.pdfUrl);
+    setCurrentPDFTitle(material.title);
+    setShowPDFViewer(true);
   };
 
   const filteredMaterials = materials.filter(material => {
@@ -128,8 +135,8 @@ const StudyMaterials = () => {
     <div className="container mx-auto p-6 space-y-6">
       <div className="flex flex-col space-y-4">
         <div>
-          <h1 className="text-3xl font-bold text-foreground">Study Materials</h1>
-          <p className="text-muted-foreground">Access curated learning resources to improve your English skills</p>
+          <h1 className="text-3xl font-bold text-foreground">Materiais de Estudo</h1>
+          <p className="text-muted-foreground">Acesse recursos de aprendizagem selecionados para melhorar suas habilidades em inglês</p>
         </div>
 
         {/* Search and Filters */}
@@ -137,7 +144,7 @@ const StudyMaterials = () => {
           <div className="relative flex-1">
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
             <Input
-              placeholder="Search materials..."
+              placeholder="Buscar materiais..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               className="pl-10"
@@ -145,10 +152,10 @@ const StudyMaterials = () => {
           </div>
           <Tabs value={selectedLevel} onValueChange={setSelectedLevel} className="w-auto">
             <TabsList>
-              <TabsTrigger value="all">All Levels</TabsTrigger>
-              <TabsTrigger value="beginner">Beginner</TabsTrigger>
-              <TabsTrigger value="intermediate">Intermediate</TabsTrigger>
-              <TabsTrigger value="advanced">Advanced</TabsTrigger>
+              <TabsTrigger value="all">Todos os Níveis</TabsTrigger>
+              <TabsTrigger value="beginner">Iniciante</TabsTrigger>
+              <TabsTrigger value="intermediate">Intermediário</TabsTrigger>
+              <TabsTrigger value="advanced">Avançado</TabsTrigger>
             </TabsList>
           </Tabs>
         </div>
@@ -161,7 +168,7 @@ const StudyMaterials = () => {
             <div className="flex items-center space-x-2">
               <BookOpen className="h-5 w-5 text-primary" />
               <div>
-                <p className="text-sm text-muted-foreground">Total Materials</p>
+                <p className="text-sm text-muted-foreground">Total de Materiais</p>
                 <p className="text-2xl font-bold">{materials.length}</p>
               </div>
             </div>
@@ -170,10 +177,10 @@ const StudyMaterials = () => {
         <Card>
           <CardContent className="p-4">
             <div className="flex items-center space-x-2">
-              <Video className="h-5 w-5 text-primary" />
+              <FileCheck className="h-5 w-5 text-primary" />
               <div>
-                <p className="text-sm text-muted-foreground">Video Lessons</p>
-                <p className="text-2xl font-bold">{materials.filter(m => m.type === 'video').length}</p>
+                <p className="text-sm text-muted-foreground">PDFs Disponíveis</p>
+                <p className="text-2xl font-bold">{materials.length}</p>
               </div>
             </div>
           </CardContent>
@@ -181,10 +188,10 @@ const StudyMaterials = () => {
         <Card>
           <CardContent className="p-4">
             <div className="flex items-center space-x-2">
-              <Headphones className="h-5 w-5 text-primary" />
+              <Star className="h-5 w-5 text-primary" />
               <div>
-                <p className="text-sm text-muted-foreground">Audio Content</p>
-                <p className="text-2xl font-bold">{materials.filter(m => m.type === 'audio').length}</p>
+                <p className="text-sm text-muted-foreground">Avaliação Média</p>
+                <p className="text-2xl font-bold">4.7</p>
               </div>
             </div>
           </CardContent>
@@ -192,10 +199,10 @@ const StudyMaterials = () => {
         <Card>
           <CardContent className="p-4">
             <div className="flex items-center space-x-2">
-              <FileText className="h-5 w-5 text-primary" />
+              <Clock className="h-5 w-5 text-primary" />
               <div>
-                <p className="text-sm text-muted-foreground">Documents</p>
-                <p className="text-2xl font-bold">{materials.filter(m => m.type === 'text').length}</p>
+                <p className="text-sm text-muted-foreground">Horas de Conteúdo</p>
+                <p className="text-2xl font-bold">4.5h</p>
               </div>
             </div>
           </CardContent>
@@ -248,23 +255,16 @@ const StudyMaterials = () => {
                   className="flex-1" 
                   onClick={() => handleStudyNow(material)}
                 >
-                  <BookOpen className="h-4 w-4 mr-2" />
-                  {materialPDFs[material.id] ? 'Study Now' : 'Add PDF'}
+                  <FileText className="h-4 w-4 mr-2" />
+                  Abrir PDF
                 </Button>
-                {materialPDFs[material.id] && (
-                  <Button variant="outline" size="icon">
-                    <Download className="h-4 w-4" />
-                  </Button>
-                )}
-                {!materialPDFs[material.id] && (
-                  <Button 
-                    variant="outline" 
-                    size="icon"
-                    onClick={() => setShowUpload(material.id)}
-                  >
-                    <Upload className="h-4 w-4" />
-                  </Button>
-                )}
+                <Button 
+                  variant="outline" 
+                  size="icon"
+                  onClick={() => window.open(material.pdfUrl, '_blank')}
+                >
+                  <Download className="h-4 w-4" />
+                </Button>
               </div>
             </CardContent>
           </Card>
@@ -274,28 +274,8 @@ const StudyMaterials = () => {
       {filteredMaterials.length === 0 && (
         <div className="text-center py-12">
           <BookOpen className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
-          <h3 className="text-lg font-medium text-foreground mb-2">No materials found</h3>
-          <p className="text-muted-foreground">Try adjusting your search criteria or filters.</p>
-        </div>
-      )}
-
-      {/* PDF Upload Modal */}
-      {showUpload !== null && (
-        <div className="fixed inset-0 bg-background/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-          <div className="relative">
-            <Button
-              variant="outline"
-              size="sm"
-              className="absolute -top-2 -right-2 z-10 h-8 w-8 rounded-full p-0"
-              onClick={() => setShowUpload(null)}
-            >
-              ×
-            </Button>
-            <PDFUpload
-              materialId={showUpload}
-              onUploadSuccess={(url) => handlePDFUploadSuccess(url, showUpload)}
-            />
-          </div>
+          <h3 className="text-lg font-medium text-foreground mb-2">Nenhum material encontrado</h3>
+          <p className="text-muted-foreground">Tente ajustar sua busca ou filtros.</p>
         </div>
       )}
 
