@@ -31,42 +31,34 @@ export default function Achievements() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        // Fetch all achievements
-        const { data: achievementsData, error: achievementsError } = await supabase
-          .from('achievements')
-          .select('*')
-          .eq('is_active', true)
-          .order('points_reward', { ascending: false });
-
-        if (achievementsError) throw achievementsError;
-
-        // Fetch user's earned achievements
-        let userAchievementsData = [];
-        if (profile?.user_id) {
-          const { data, error: userAchievementsError } = await supabase
-            .from('user_achievements')
-            .select(`
-              *,
-              achievements (*)
-            `)
-            .eq('user_id', profile.user_id);
-
-          if (userAchievementsError) throw userAchievementsError;
-          userAchievementsData = data || [];
-        }
-
-        setAchievements(achievementsData || []);
-        setUserAchievements(userAchievementsData);
-      } catch (error) {
-        console.error('Error fetching achievements:', error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchData();
+    // TODO: Uncomment when achievements tables are created
+    // const fetchData = async () => {
+    //   try {
+    //     const { data: achievementsData } = await supabase
+    //       .from('achievements')
+    //       .select('*')
+    //       .eq('is_active', true)
+    //       .order('points_reward', { ascending: false });
+    //
+    //     let userAchievementsData = [];
+    //     if (profile?.user_id) {
+    //       const { data } = await supabase
+    //         .from('user_achievements')
+    //         .select(`*, achievements (*)`)
+    //         .eq('user_id', profile.user_id);
+    //       userAchievementsData = data || [];
+    //     }
+    //
+    //     setAchievements(achievementsData || []);
+    //     setUserAchievements(userAchievementsData);
+    //   } catch (error) {
+    //     console.error('Error fetching achievements:', error);
+    //   } finally {
+    //     setLoading(false);
+    //   }
+    // };
+    // fetchData();
+    setLoading(false);
   }, [profile?.user_id]);
 
   const earnedAchievementIds = userAchievements.map(ua => ua.achievement_id);
@@ -85,11 +77,8 @@ export default function Achievements() {
     if (!achievement.requirements || !profile) return 0;
     
     const requirements = achievement.requirements;
-    if (requirements.points && profile.total_points) {
-      return Math.min((profile.total_points / requirements.points) * 100, 100);
-    }
-    if (requirements.streak && profile.study_streak) {
-      return Math.min((profile.study_streak / requirements.streak) * 100, 100);
+    if (requirements.points && profile.points) {
+      return Math.min((profile.points / requirements.points) * 100, 100);
     }
     
     return 0;

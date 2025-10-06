@@ -1,10 +1,12 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { PDFViewer } from '@/components/materials/PDFViewer';
+import { supabase } from '@/integrations/supabase/client';
+import { useToast } from '@/hooks/use-toast';
 import { 
   BookOpen, 
   Video, 
@@ -15,90 +17,59 @@ import {
   Clock,
   User,
   Download,
-  FileCheck
+  FileCheck,
+  Loader2
 } from 'lucide-react';
 
+interface StudyMaterial {
+  id: string;
+  title: string;
+  description: string;
+  level: string;
+  duration: string;
+  rating: number;
+  author: string;
+  topics: string[];
+  pdf_url: string;
+  created_at: string;
+  updated_at: string;
+  created_by: string;
+}
+
 const StudyMaterials = () => {
+  const { toast } = useToast();
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedLevel, setSelectedLevel] = useState('all');
   const [showPDFViewer, setShowPDFViewer] = useState(false);
   const [currentPDFUrl, setCurrentPDFUrl] = useState('');
   const [currentPDFTitle, setCurrentPDFTitle] = useState('');
+  const [materials, setMaterials] = useState<StudyMaterial[]>([]);
+  const [loading, setLoading] = useState(true);
 
-  const materials = [
-    {
-      id: 1,
-      title: 'Fundamentos da Gramática Inglesa',
-      type: 'text',
-      level: 'beginner',
-      duration: '45 min',
-      rating: 4.8,
-      author: 'Dr. Sarah Wilson',
-      description: 'Guia completo de gramática básica incluindo tempos verbais, artigos e estrutura de frases.',
-      topics: ['Gramática', 'Tempos Verbais', 'Artigos'],
-      pdfUrl: 'https://example.com/grammar-fundamentals.pdf'
-    },
-    {
-      id: 2,
-      title: 'Conversação em Inglês para Negócios',
-      type: 'text',
-      level: 'intermediate',
-      duration: '30 min',
-      rating: 4.6,
-      author: 'Prof. Michael Chen',
-      description: 'Pratique cenários de negócios comuns com conversas autênticas e vocabulário.',
-      topics: ['Negócios', 'Conversação', 'Vocabulário'],
-      pdfUrl: 'https://example.com/business-english.pdf'
-    },
-    {
-      id: 3,
-      title: 'Prática de Speaking IELTS',
-      type: 'text',
-      level: 'advanced',
-      duration: '60 min',
-      rating: 4.9,
-      author: 'Emma Thompson',
-      description: 'Preparação completa para o IELTS speaking com questões modelo e estratégias.',
-      topics: ['IELTS', 'Speaking', 'Preparação'],
-      pdfUrl: 'https://example.com/ielts-speaking.pdf'
-    },
-    {
-      id: 4,
-      title: 'Manual de Phrasal Verbs',
-      type: 'text',
-      level: 'intermediate',
-      duration: '25 min',
-      rating: 4.5,
-      author: 'James Rodriguez',
-      description: 'Phrasal verbs essenciais com exemplos e exercícios para comunicação diária.',
-      topics: ['Phrasal Verbs', 'Vocabulário', 'Comunicação'],
-      pdfUrl: 'https://example.com/phrasal-verbs.pdf'
-    },
-    {
-      id: 5,
-      title: 'Pronúncia Avançada do Inglês',
-      type: 'text',
-      level: 'advanced',
-      duration: '50 min',
-      rating: 4.7,
-      author: 'Dr. Robert Anderson',
-      description: 'Técnicas avançadas de pronúncia e redução de sotaque.',
-      topics: ['Pronúncia', 'Fonética', 'Sotaque'],
-      pdfUrl: 'https://example.com/pronunciation.pdf'
-    },
-    {
-      id: 6,
-      title: 'Vocabulário Acadêmico',
-      type: 'text',
-      level: 'advanced',
-      duration: '40 min',
-      rating: 4.8,
-      author: 'Prof. Linda Martinez',
-      description: 'Vocabulário essencial para contextos acadêmicos e escrita formal.',
-      topics: ['Acadêmico', 'Vocabulário', 'Escrita'],
-      pdfUrl: 'https://example.com/academic-vocabulary.pdf'
+  useEffect(() => {
+    fetchMaterials();
+  }, []);
+
+  const fetchMaterials = async () => {
+    try {
+      const { data, error } = await supabase
+        .from('study_materials')
+        .select('*')
+        .order('created_at', { ascending: false });
+
+      if (error) throw error;
+
+      setMaterials(data || []);
+    } catch (error: any) {
+      toast({
+        title: "Erro",
+        description: "Não foi possível carregar os materiais.",
+        variant: "destructive"
+      });
+    } finally {
+      setLoading(false);
     }
-  ];
+  };
 
   const getTypeIcon = (type: string) => {
     switch (type) {
@@ -118,8 +89,8 @@ const StudyMaterials = () => {
     }
   };
 
-  const handleStudyNow = (material: any) => {
-    setCurrentPDFUrl(material.pdfUrl);
+  const handleStudyNow = (material: StudyMaterial) => {
+    setCurrentPDFUrl(material.pdf_url);
     setCurrentPDFTitle(material.title);
     setShowPDFViewer(true);
   };
@@ -130,6 +101,14 @@ const StudyMaterials = () => {
     const matchesLevel = selectedLevel === 'all' || material.level === selectedLevel;
     return matchesSearch && matchesLevel;
   });
+
+  if (loading) {
+    return (
+      <div className="container mx-auto p-6 flex items-center justify-center min-h-[400px]">
+        <Loader2 className="h-8 w-8 animate-spin text-primary" />
+      </div>
+    );
+  }
 
   return (
     <div className="container mx-auto p-6 space-y-6">
@@ -216,7 +195,7 @@ const StudyMaterials = () => {
             <CardHeader className="pb-4">
               <div className="flex items-start justify-between">
                 <div className="flex items-center space-x-2">
-                  {getTypeIcon(material.type)}
+                  <FileText className="h-4 w-4" />
                   <Badge className={getLevelColor(material.level)}>
                     {material.level}
                   </Badge>
@@ -261,7 +240,7 @@ const StudyMaterials = () => {
                 <Button 
                   variant="outline" 
                   size="icon"
-                  onClick={() => window.open(material.pdfUrl, '_blank')}
+                  onClick={() => window.open(material.pdf_url, '_blank')}
                 >
                   <Download className="h-4 w-4" />
                 </Button>

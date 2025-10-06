@@ -16,6 +16,7 @@ import GroupDetails from "./pages/GroupDetails";
 import Messages from "./pages/Messages";
 import Notifications from "./pages/Notifications";
 import StudyMaterials from "./pages/StudyMaterials";
+import AdminMaterials from "./pages/AdminMaterials";
 import Achievements from "./pages/Achievements";
 import Settings from "./pages/Settings";
 import NotFound from "./pages/NotFound";
@@ -78,6 +79,7 @@ const App = () => {
               <Route path="/groups/:groupId" element={<GroupDetails />} />
               <Route path="/messages" element={<Messages />} />
                 <Route path="/materials" element={<StudyMaterials />} />
+                <Route path="/admin/materials" element={<AdminMaterials />} />
                 <Route path="/achievements" element={<Achievements />} />
                 <Route path="/notifications" element={<Notifications />} />
                 <Route path="/settings" element={<Settings />} />

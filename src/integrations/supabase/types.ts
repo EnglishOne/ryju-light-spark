@@ -234,6 +234,51 @@ export type Database = {
           },
         ]
       }
+      study_materials: {
+        Row: {
+          author: string
+          created_at: string
+          created_by: string
+          description: string
+          duration: string
+          id: string
+          level: string
+          pdf_url: string
+          rating: number | null
+          title: string
+          topics: string[]
+          updated_at: string
+        }
+        Insert: {
+          author: string
+          created_at?: string
+          created_by: string
+          description: string
+          duration: string
+          id?: string
+          level: string
+          pdf_url: string
+          rating?: number | null
+          title: string
+          topics?: string[]
+          updated_at?: string
+        }
+        Update: {
+          author?: string
+          created_at?: string
+          created_by?: string
+          description?: string
+          duration?: string
+          id?: string
+          level?: string
+          pdf_url?: string
+          rating?: number | null
+          title?: string
+          topics?: string[]
+          updated_at?: string
+        }
+        Relationships: []
+      }
       topics: {
         Row: {
           content: string
