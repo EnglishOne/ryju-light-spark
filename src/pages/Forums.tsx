@@ -108,9 +108,9 @@ export default function Forums() {
       {/* Header */}
       <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold">Community Forums</h1>
+          <h1 className="text-3xl font-bold">Fóruns da Comunidade</h1>
           <p className="text-muted-foreground mt-1">
-            Join discussions and share your English learning journey
+            Participe de discussões e compartilhe sua jornada de aprendizado de inglês
           </p>
         </div>
         <CreateForumDialog onForumCreated={refreshForums} />
@@ -122,7 +122,7 @@ export default function Forums() {
           <div className="relative">
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
             <Input 
-              placeholder="Search forums..." 
+              placeholder="Buscar fóruns..." 
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               className="pl-10"
@@ -136,7 +136,7 @@ export default function Forums() {
               <MessageSquare className="w-4 h-4 text-primary" />
               <div>
                 <div className="text-sm font-medium">644</div>
-                <div className="text-xs text-muted-foreground">Topics</div>
+                <div className="text-xs text-muted-foreground">Tópicos</div>
               </div>
             </div>
           </Card>
@@ -145,7 +145,7 @@ export default function Forums() {
               <Users className="w-4 h-4 text-green-500" />
               <div>
                 <div className="text-sm font-medium">4,396</div>
-                <div className="text-xs text-muted-foreground">Posts</div>
+                <div className="text-xs text-muted-foreground">Publicações</div>
               </div>
             </div>
           </Card>
@@ -174,7 +174,7 @@ export default function Forums() {
                     {forum.isActive && (
                       <Badge variant="secondary" className="text-xs">
                         <div className="w-2 h-2 bg-green-500 rounded-full mr-1" />
-                        Active
+                        Ativo
                       </Badge>
                     )}
                   </div>
@@ -191,7 +191,7 @@ export default function Forums() {
                     navigate(`/forums/${forum.id}/topics`);
                   }}
                 >
-                  View Topics
+                  Ver Tópicos
                 </Button>
               </div>
             </CardHeader>
@@ -201,15 +201,15 @@ export default function Forums() {
                 <div className="flex items-center gap-6 text-sm text-muted-foreground">
                   <div className="flex items-center gap-1">
                     <MessageSquare className="w-4 h-4" />
-                    <span>{forum.topics || 0} topics</span>
+                    <span>{forum.topics || 0} tópicos</span>
                   </div>
                   <div className="flex items-center gap-1">
                     <TrendingUp className="w-4 h-4" />
-                    <span>{forum.replies || 0} replies</span>
+                    <span>{forum.replies || 0} respostas</span>
                   </div>
                   <div className="flex items-center gap-1">
                     <Clock className="w-4 h-4" />
-                    <span>{forum.lastActivity || 'No activity'}</span>
+                    <span>{forum.lastActivity || 'Sem atividade'}</span>
                   </div>
                 </div>
                 
@@ -220,7 +220,7 @@ export default function Forums() {
                     className="text-xs"
                     onClick={() => navigate(`/forums/${forum.id}/topics`)}
                   >
-                    View Topics
+                    Ver Tópicos
                   </Button>
                 </div>
               </div>
@@ -234,7 +234,7 @@ export default function Forums() {
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <Pin className="w-5 h-5" />
-            Trending Topics Today
+            Tópicos em Alta Hoje
           </CardTitle>
         </CardHeader>
         <CardContent>
@@ -249,15 +249,15 @@ export default function Forums() {
                 <div className="flex-1">
                   <h4 className="font-medium text-sm">{topic.title}</h4>
                   <div className="flex items-center gap-2 text-xs text-muted-foreground mt-1">
-                    <span>in {topic.forum}</span>
+                    <span>em {topic.forum}</span>
                     <span>•</span>
-                    <span>{topic.replies} replies</span>
+                    <span>{topic.replies} respostas</span>
                     <span>•</span>
                     <span>{topic.time}</span>
                   </div>
                 </div>
                 <Button variant="ghost" size="sm" className="text-xs">
-                  View
+                  Ver
                 </Button>
               </div>
             ))}
